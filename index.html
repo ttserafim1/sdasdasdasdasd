@@ -125,10 +125,10 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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'
+            'Authorization': 'Bearer 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' // Ваш API-ключ
           },
           body: JSON.stringify({
-            model: "google/gemini-2.0-flash-lite-001",
+            model: "google/gemini-2.0-flash-lite-001", // Используем вашу модель
             prompt: `Ты управляешь бункером на Марсе в 2100 году. Вопрос: ${input}`,
             max_tokens: 100,
             temperature: 0.7
@@ -136,8 +136,13 @@
         });
 
         const data = await response.json();
-        const botReply = data.choices[0].text.trim();
-        addOutput(`ChaldGPT: ${botReply}`);
+
+        if (data.choices && data.choices[0]) {
+          const botReply = data.choices[0].text.trim();
+          addOutput(`ChaldGPT: ${botReply}`);
+        } else {
+          addOutput("Извините, я не могу обработать ваш запрос.");
+        }
       } catch (error) {
         console.error('Ошибка при запросе:', error);
         addOutput("Извините, возникла ошибка при обработке запроса.");
