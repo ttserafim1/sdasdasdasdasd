@@ -1,153 +1,136 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ChaldGPT Terminal</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Показатели бункера на Марсе</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      background-color: #1d1d1d;
-      color: #00b7b7; /* Бирюзовый цвет текста */
-      font-family: monospace;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+        body {
+            background-color: #1b1b1b;
+            font-family: 'Courier New', Courier, monospace;
+            color: #00FFFF;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-    .terminal {
-      width: 80%;
-      height: 80%;
-      border: 2px solid #00b7b7; /* Бирюзовая рамка */
-      padding: 20px;
-      overflow-y: auto;
-      background-color: #000000; /* Черный фон терминала */
-      color: #00b7b7;
-      font-size: 18px;
-    }
+        .container {
+            width: 300px;
+            height: 350px;
+        }
 
-    .output {
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      margin-bottom: 10px;
-    }
+        .terminal {
+            background-color: #000000;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
 
-    input {
-      width: 100%;
-      background-color: #1d1d1d;
-      color: #00b7b7;
-      border: none;
-      font-size: 18px;
-      padding: 10px;
-      margin-top: 10px;
-    }
+        .output {
+            text-align: left;
+            margin-bottom: 20px;
+        }
 
-    .loading-bar {
-      display: inline-block;
-      width: 100%;
-      height: 4px;
-      background-color: #555;
-      position: relative;
-      margin-top: 5px;
-    }
+        .line {
+            margin: 5px 0;
+        }
 
-    .loading-bar-inner {
-      height: 100%;
-      width: 0;
-      background-color: #00b7b7;
-      animation: load 2s infinite;
-    }
+        .line span {
+            color: #00FF00;
+        }
 
-    @keyframes load {
-      0% {
-        width: 0%;
-      }
-      50% {
-        width: 50%;
-      }
-      100% {
-        width: 100%;
-      }
-    }
-  </style>
+        .input {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        input {
+            width: 70%;
+            padding: 5px;
+            background-color: #333333;
+            border: 1px solid #00FFFF;
+            color: #00FFFF;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #00FFFF;
+            color: #1b1b1b;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #00b3b3;
+        }
+    </style>
 </head>
 <body>
-  <div class="terminal">
-    <div id="output" class="output">
-      Привет! Я ChaldGPT, ваш AI-помощник. Я управляю бункером на Марсе, и сейчас 2100 год.
+    <div class="container">
+        <div class="terminal">
+            <div class="output">
+                <div class="line">Бункер на Марсе — статус</div>
+                <div class="line">Дата: <span id="date">2100</span> год</div>
+                <div class="line">Температура: <span id="temperature">-80°C</span></div>
+                <div class="line">Уровень кислорода: <span id="oxygen-level">99%</span></div>
+                <div class="line">Энергия: <span id="energy">85%</span></div>
+                <div class="line">Статус бункера: <span id="status">Работает</span></div>
+            </div>
+            <div class="input">
+                <input type="text" id="command" placeholder="Введите команду...">
+                <button onclick="processCommand()">Отправить</button>
+            </div>
+        </div>
     </div>
-    <div class="loading-bar">
-      <div class="loading-bar-inner"></div>
-    </div>
-    <input type="text" id="userInput" placeholder="Введите команду..." autofocus />
-  </div>
 
-  <script>
-    document.getElementById("userInput").addEventListener("keydown", function (event) {
-      if (event.key === "Enter") {
-        const userInput = event.target.value;
-        if (userInput.trim()) {
-          addOutput(`> ${userInput}`);
-          event.target.value = '';
-          processRequest(userInput);
+    <script>
+        // Функция для обработки команд
+        function processCommand() {
+            const command = document.getElementById("command").value.trim();
+            const statusElement = document.getElementById("status");
+
+            // Обработка команд
+            if (command.toLowerCase() === "проверить статус") {
+                // Моделируем обновление показателей бункера
+                updateBunkerStatus("-78°C", "98%", "84%", "Все системы в норме");
+            } else if (command.toLowerCase() === "отключить систему") {
+                updateBunkerStatus("-100°C", "0%", "0%", "Система отключена");
+            } else if (command.toLowerCase() === "установить температуру") {
+                const newTemperature = prompt("Введите новую температуру: ");
+                updateBunkerStatus(newTemperature, document.getElementById("oxygen-level").innerText, document.getElementById("energy").innerText, statusElement.innerText);
+            } else if (command.toLowerCase() === "установить уровень кислорода") {
+                const newOxygen = prompt("Введите новый уровень кислорода: ");
+                updateBunkerStatus(document.getElementById("temperature").innerText, newOxygen, document.getElementById("energy").innerText, statusElement.innerText);
+            } else if (command.toLowerCase() === "установить энергию") {
+                const newEnergy = prompt("Введите новый уровень энергии: ");
+                updateBunkerStatus(document.getElementById("temperature").innerText, document.getElementById("oxygen-level").innerText, newEnergy, statusElement.innerText);
+            } else {
+                alert("Неизвестная команда. Попробуйте снова.");
+            }
+
+            document.getElementById("command").value = "";  // Очистка поля ввода
         }
-      }
-    });
 
-    function addOutput(text) {
-      const outputDiv = document.getElementById("output");
-      const newText = document.createElement("div");
-      newText.textContent = text;
-      outputDiv.appendChild(newText);
-      outputDiv.scrollTop = outputDiv.scrollHeight; // Scroll to the bottom
-    }
-
-    function processRequest(input) {
-      addOutput("Обработка запроса...");
-      const loadingBar = document.querySelector('.loading-bar-inner');
-      loadingBar.style.width = "0%";  // reset loading bar
-
-      setTimeout(() => {
-        loadingBar.style.width = "100%";
-        fetchResponse(input);
-      }, 2000);  // simulate loading time
-    }
-
-    async function fetchResponse(input) {
-      try {
-        const response = await fetch('https://api.openrouter.ai/v1/chat', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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' // Ваш API-ключ
-          },
-          body: JSON.stringify({
-            model: "google/gemini-2.0-flash-lite-001", // Используем вашу модель
-            prompt: `Ты управляешь бункером на Марсе в 2100 году. Вопрос: ${input}`,
-            max_tokens: 100,
-            temperature: 0.7
-          })
-        });
-
-        const data = await response.json();
-
-        if (data.choices && data.choices[0]) {
-          const botReply = data.choices[0].text.trim();
-          addOutput(`ChaldGPT: ${botReply}`);
-        } else {
-          addOutput("Извините, я не могу обработать ваш запрос.");
+        // Функция для обновления показателей бункера
+        function updateBunkerStatus(temperature, oxygen, energy, status) {
+            document.getElementById("temperature").innerText = temperature;
+            document.getElementById("oxygen-level").innerText = oxygen;
+            document.getElementById("energy").innerText = energy;
+            document.getElementById("status").innerText = status;
         }
-      } catch (error) {
-        console.error('Ошибка при запросе:', error);
-        addOutput("Извините, возникла ошибка при обработке запроса.");
-      }
-    }
-  </script>
+    </script>
 </body>
 </html>
