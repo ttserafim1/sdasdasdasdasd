@@ -83,7 +83,7 @@
 <body>
   <div class="terminal">
     <div class="message" id="messageContainer">
-      <div class="bot">Привет! Я ChaldGPT, ваш AI-помощник.</div>
+      <div class="bot">Привет! Я ChaldGPT, ваш AI-помощник. Я управляю бункером на Марсе, и сейчас 2100 год.</div>
     </div>
     <input type="text" id="inputField" placeholder="Введите команду..." autofocus>
   </div>
@@ -92,8 +92,8 @@
     const terminalOutput = document.getElementById('messageContainer');
     const inputField = document.getElementById('inputField');
     
-    // Ваш API ключ для Google Gemini Flash Lite (вставьте сюда)
-    const GEMINI_API_KEY = "your-gemini-api-key-here"; // Замените на ваш ключ API
+    // Ваш API ключ для Gemini
+    const GEMINI_API_KEY = "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"; // Ваш ключ
 
     function addMessage(content, type) {
       const messageElement = document.createElement('div');
@@ -118,15 +118,15 @@
         inputField.value = '';
         addTypingIndicator();
 
-        // Отправляем запрос в Google Gemini API
+        // Отправляем запрос в Gemini API
         fetchGeminiResponse(userMessage);
       }
     });
 
-    // Функция для отправки запроса в Google Gemini API
+    // Функция для отправки запроса в Gemini API
     async function fetchGeminiResponse(userMessage) {
       try {
-        const response = await fetch('https://api.google.com/gemini/flash-lite', {
+        const response = await fetch('https://api.openrouter.ai/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -135,7 +135,7 @@
           body: JSON.stringify({
             model: "google/gemini-2.0-flash-lite-001",  // Используем модель Gemini Flash Lite
             messages: [
-              { "role": "system", "content": "Ты - ChaldGPT, умный помощник. Отвечай вежливо и информативно." },
+              { "role": "system", "content": "Ты управляешь бункером на Марсе в 2100 году. Ты являешься AI-помощником, который решает все вопросы, связанные с функционированием бункера, управлением ресурсами и жизнедеятельностью его обитателей." },
               { "role": "user", "content": userMessage }
             ]
           })
@@ -146,7 +146,7 @@
         terminalOutput.removeChild(terminalOutput.lastChild);  // Убираем индикатор "печатает"
         addMessage(botResponse, 'bot');
       } catch (error) {
-        console.error('Ошибка при запросе в Google Gemini:', error);
+        console.error('Ошибка при запросе в Gemini:', error);
         terminalOutput.removeChild(terminalOutput.lastChild);  // Убираем индикатор "печатает"
         addMessage('Извините, возникла ошибка при обработке запроса.', 'bot');
       }
