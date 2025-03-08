@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChaldGPT Terminal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #1e1e1e;
+      color: #00ff00;
+      font-family: monospace;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .terminal {
+      width: 80%;
+      height: 80%;
+      border: 2px solid #00ff00;
+      padding: 20px;
+      overflow-y: auto;
+      background-color: black;
+      border-radius: 10px;
+    }
+
+    .message {
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      max-height: 400px;
+    }
+
+    .message .bot {
+      color: #00ff00;
+      padding: 5px;
+      border-left: 2px solid #00ff00;
+      margin-bottom: 5px;
+    }
+
+    .message .user {
+      color: #ffffff;
+      padding: 5px;
+      border-left: 2px solid #ffffff;
+      margin-bottom: 5px;
+    }
+
+    .typing {
+      color: #00ff00;
+      font-size: 14px;
+      margin-top: 10px;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    #inputField {
+      width: 100%;
+      background-color: black;
+      color: #00ff00;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    #inputField:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div class="message" id="messageContainer">
+      <div class="bot">Привет! Я ChaldGPT, ваш AI-помощник.</div>
+    </div>
+    <input type="text" id="inputField" placeholder="Введите команду..." autofocus>
+  </div>
+
+  <script>
+    const terminalOutput = document.getElementById('messageContainer');
+    const inputField = document.getElementById('inputField');
+
+    function addMessage(content, type) {
+      const messageElement = document.createElement('div');
+      messageElement.classList.add(type);
+      messageElement.innerText = content;
+      terminalOutput.appendChild(messageElement);
+      terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    }
+
+    function addTypingIndicator() {
+      const typingElement = document.createElement('div');
+      typingElement.classList.add('typing');
+      typingElement.innerText = '...';
+      terminalOutput.appendChild(typingElement);
+      terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    }
+
+    inputField.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        let userMessage = inputField.value;
+        addMessage(userMessage, 'user');
+        inputField.value = '';
+        addTypingIndicator();
+
+        // Здесь мы имитируем вызов нейросети
+        setTimeout(function() {
+          let botResponse = "Это ответ от бота: " + userMessage;
+          terminalOutput.removeChild(terminalOutput.lastChild);  // Убираем индикатор "печатает"
+          addMessage(botResponse, 'bot');
+        }, 1000); // Задержка для имитации обработки запроса
+      }
+    });
+  </script>
+</body>
+</html>
