@@ -12,8 +12,8 @@
     }
 
     body {
-      background-color: #1e1e1e;
-      color: #00ff00;
+      background-color: #1d1d1d;
+      color: #00b7b7; /* Бирюзовый цвет текста */
       font-family: monospace;
       height: 100vh;
       display: flex;
@@ -24,10 +24,10 @@
     .terminal {
       width: 80%;
       height: 80%;
-      border: 2px solid #00ff00;
+      border: 2px solid #00b7b7; /* Бирюзовая рамка */
       padding: 20px;
       overflow-y: auto;
-      background-color: black;
+      background-color: #000000; /* Черный фон терминала */
       border-radius: 10px;
     }
 
@@ -39,21 +39,21 @@
     }
 
     .message .bot {
-      color: #00ff00;
+      color: #00b7b7; /* Бирюзовый цвет для сообщений бота */
       padding: 5px;
-      border-left: 2px solid #00ff00;
+      border-left: 2px solid #00b7b7;
       margin-bottom: 5px;
     }
 
     .message .user {
-      color: #ffffff;
+      color: #ffffff; /* Белый цвет для сообщений пользователя */
       padding: 5px;
       border-left: 2px solid #ffffff;
       margin-bottom: 5px;
     }
 
     .typing {
-      color: #00ff00;
+      color: #00b7b7; /* Бирюзовый цвет для индикатора "печатает" */
       font-size: 14px;
       margin-top: 10px;
       animation: blink 1s infinite;
@@ -67,8 +67,8 @@
 
     #inputField {
       width: 100%;
-      background-color: black;
-      color: #00ff00;
+      background-color: #000000; /* Черный фон поля ввода */
+      color: #00b7b7; /* Бирюзовый цвет текста */
       border: none;
       outline: none;
       font-size: 16px;
@@ -91,6 +91,9 @@
   <script>
     const terminalOutput = document.getElementById('messageContainer');
     const inputField = document.getElementById('inputField');
+    
+    // Ваш API ключ для Google Gemini Flash Lite (вставьте сюда)
+    const GEMINI_API_KEY = "your-gemini-api-key-here"; // Замените на ваш ключ API
 
     function addMessage(content, type) {
       const messageElement = document.createElement('div');
@@ -115,14 +118,39 @@
         inputField.value = '';
         addTypingIndicator();
 
-        // Здесь мы имитируем вызов нейросети
-        setTimeout(function() {
-          let botResponse = "Это ответ от бота: " + userMessage;
-          terminalOutput.removeChild(terminalOutput.lastChild);  // Убираем индикатор "печатает"
-          addMessage(botResponse, 'bot');
-        }, 1000); // Задержка для имитации обработки запроса
+        // Отправляем запрос в Google Gemini API
+        fetchGeminiResponse(userMessage);
       }
     });
+
+    // Функция для отправки запроса в Google Gemini API
+    async function fetchGeminiResponse(userMessage) {
+      try {
+        const response = await fetch('https://api.google.com/gemini/flash-lite', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${GEMINI_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.0-flash-lite-001",  // Используем модель Gemini Flash Lite
+            messages: [
+              { "role": "system", "content": "Ты - ChaldGPT, умный помощник. Отвечай вежливо и информативно." },
+              { "role": "user", "content": userMessage }
+            ]
+          })
+        });
+
+        const data = await response.json();
+        const botResponse = data.choices[0].message.content;
+        terminalOutput.removeChild(terminalOutput.lastChild);  // Убираем индикатор "печатает"
+        addMessage(botResponse, 'bot');
+      } catch (error) {
+        console.error('Ошибка при запросе в Google Gemini:', error);
+        terminalOutput.removeChild(terminalOutput.lastChild);  // Убираем индикатор "печатает"
+        addMessage('Извините, возникла ошибка при обработке запроса.', 'bot');
+      }
+    }
   </script>
 </body>
 </html>
